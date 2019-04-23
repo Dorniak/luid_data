@@ -16,6 +16,8 @@ def convert_point_coma(df,column):
 
 
 def pre_procesado_1(df):
+    df['CLUSTER'] = df['CLUSTER'].apply(lambda x: x.replace('CLUSTER ', ''))
+    df['CLUSTER'] = df['CLUSTER'].astype(int)
     df = convert_point_coma(df, 'Consumo / t km')
     df = convert_point_coma(df, 't. marcha lenta/ t. motor ligado')
     df = convert_point_coma(df, 'Custo / km')
@@ -33,8 +35,16 @@ def pre_procesado_1(df):
 if __name__ == '__main__':
     df = carga('data/Datos_prueba.csv', '\t')
     df = pre_procesado_1(df)
+    # fig, (ax1, ax2) = plt.subplots(1, 2)
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+
     #df.plot(kind='box')
     #df.boxplot(column=['Consumo / t km'])
-    df['Consumo / t km'].plot.box()
+    # df['Consumo / t km'].plot.box(ax=ax1)
+    # df['Custo / km'].plot.box(ax=ax2)
+    df.groupby('CLUSTER')['Consumo / t km'].mean().plot(kind='barh')
+    # df.groupby('PLACAS').plot(x='CLUSTER', y='Consumo / t km', ax=ax, legend=True)
+
     plt.show()
     print(df.dtypes)
